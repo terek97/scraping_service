@@ -40,3 +40,4 @@ class Profession(models.Model):
             super().save()
 
 
+class
