@@ -40,4 +40,4 @@ class Profession(models.Model):
             super().save()
 
 
-class
+class Vacancy(models.Model):
