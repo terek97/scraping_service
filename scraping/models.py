@@ -1,6 +1,7 @@
 from django.db import models
 from .utils import make_slug
 
+
 # Create your models here.
 
 
@@ -41,3 +42,10 @@ class Profession(models.Model):
 
 
 class Vacancy(models.Model):
+    url = models.URLField()
+    title = models.CharField(max_length=250, verbose_name='')
+    company = models.CharField(max_length=250, verbose_name='')
+    description = models.TextField(verbose_name='')
+    city = models.ForeignKey('City', on_delete=models.CASCADE, verbose_name='')
+    profession = models.ForeignKey('Profession', on_delete=models.CASCADE,
+                                   verbose_name='')
