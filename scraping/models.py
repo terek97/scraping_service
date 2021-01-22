@@ -17,35 +17,47 @@ class City(models.Model):
     def __str__(self):
         return self.name
 
-    def save(self):
+    def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = make_slug(self.name)
-            super().save()
+            self.slug = make_slug(str(self.name))
+            super().save(*args, **kwargs)
 
 
 class Profession(models.Model):
-    name = models.CharField(max_length=50, verbose_name='Название должности',
+    name = models.CharField(max_length=50, verbose_name='Ключевой навык',
                             unique=True)
     slug = models.CharField(max_length=50, blank=True, unique=True)
 
     class Meta:
-        verbose_name = "Название должности"
-        verbose_name_plural = "Название должностей"
+        verbose_name = "Ключевой навык"
+        verbose_name_plural = "Ключевые навыки"
 
     def __str__(self):
         return self.name
 
-    def save(self):
+    def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = make_slug(self.name)
-            super().save()
+            self.slug = make_slug(str(self.name))
+            super().save(*args, **kwargs)
 
 
 class Vacancy(models.Model):
-    url = models.URLField()
-    title = models.CharField(max_length=250, verbose_name='')
-    company = models.CharField(max_length=250, verbose_name='')
-    description = models.TextField(verbose_name='')
-    city = models.ForeignKey('City', on_delete=models.CASCADE, verbose_name='')
+    url = models.URLField(unique=True)
+    title = models.CharField(max_length=250, verbose_name='Заголовок вакансии')
+    company = models.CharField(max_length=250, verbose_name='Компания')
+    description = models.TextField(verbose_name='Описание вакансии')
+    city = models.ForeignKey('City', on_delete=models.CASCADE,
+                             verbose_name='Город')
     profession = models.ForeignKey('Profession', on_delete=models.CASCADE,
-                                   verbose_name='')
+                                   verbose_name='Ключевой навык')
+    timestamp = models.DateField(auto_now_add=True)
+
+
+    class Meta:
+        verbose_name = "Вакансия"
+        verbose_name_plural = "Вакансии"
+
+    def __str__(self):
+        return self.title
+
+

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% for obj in object_list %}
+<div class="card my-3">
+    <div class="card-header">
+        <a href="{{ obj.url }}">{{ obj.title }}</a>
+    </div>
+    <div class="card-body">
+        <b><p>{{ obj.company }}</p></b>
+        <p class="card-text">{{ obj.description }}</p>
+        <p>{{ obj.city.name }} | {{ obj.profession }} </p>
+    </div>
+    <div class="card-footer text-muted text-center">
+        {{ obj.timestamp }}
+    </div>
+</div>
+{% empty %}
+<div class="col-md-6 mx-auto">
+    <h3>К сожалению, ничего не найдено.</h3>
+</div>
+{% endfor %}
+
+<div class="col-md-6 mx-auto">
+    <form method="GET" action="">
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Найти</button>
+    </form>
+</div>
+{% endblock content%}
+
+	
+
+
+
+

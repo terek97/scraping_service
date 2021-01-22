@@ -1,6 +1,5 @@
 from django.contrib import admin
-from .models import City, Vacancy
-from .models import Profession
+from .models import City, Profession, Vacancy
 
 # Register your models here.
 admin.site.register(City)
