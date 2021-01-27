@@ -1,3 +1,4 @@
+import jsonfield as jsonfield
 from django.db import models
 from .utils import make_slug
 
@@ -52,7 +53,6 @@ class Vacancy(models.Model):
                                    verbose_name='Ключевой навык')
     timestamp = models.DateField(auto_now_add=True)
 
-
     class Meta:
         verbose_name = "Вакансия"
         verbose_name_plural = "Вакансии"
@@ -61,3 +61,6 @@ class Vacancy(models.Model):
         return self.title
 
 
+class Error(models.Model):
+    timestamp = models.DateField(auto_now_add=True)
+    data = jsonfield.JSONField()

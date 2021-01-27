@@ -1,6 +1,8 @@
 import codecs
 import os, sys
 
+from django.db import DatabaseError
+
 proj = os.path.dirname(os.path.abspath('manage.py'))
 sys.path.append(proj)
 os.environ["DJANGO_SETTINGS_MODULE"] = "scraping_service.settings"
@@ -10,7 +12,7 @@ import django
 django.setup()
 
 from scraping.scrap import *
-from scraping.models import City
+from scraping.models import City, Profession, Vacancy, Error
 
 parsers = (
     (headhunter, 'https://hh.ru/search/vacancy?clusters=true&text=python&enable_snippets=true&L_'
@@ -18,7 +20,8 @@ parsers = (
     (jooble, 'https://ru.jooble.org/SearchResult?rgns=Саратов&ukw=python')
 )
 
-city = City.objects.filter(slug='saratov')
+city = City.objects.filter(slug='saratov').first()
+profession = Profession.objects.filter(slug='python').first()
 
 vacancies, errors = [], []
 for func, url in parsers:
@@ -26,6 +29,13 @@ for func, url in parsers:
     vacancies += v
     errors += e
 
-h = codecs.open('parsed.json', 'w', 'utf-8')
-h.write(str(vacancies))
-h.close()
+for vacancy in vacancies:
+    v = Vacancy(**vacancy, city=city, profession=profession)
+    try:
+        v.save()
+    except DatabaseError:
+        pass
+
+if errors:
+    er = Error(data=errors)
+
