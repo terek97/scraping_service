@@ -1,6 +1,7 @@
 import requests
-import codecs
 from bs4 import BeautifulSoup as bs
+
+__all__ = ('headhunter', 'jooble')
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
@@ -60,10 +61,3 @@ def jooble(url):
     else:
         errors.append({'url': url, 'title': 'Page does not response'})
     return vacancies, errors
-
-
-vacancies, errors = jooble('https://ru.jooble.org/SearchResult?rgns=Саратов&ukw=python')
-h = codecs.open('hh.json', 'w', 'utf-8')
-h.write(str(vacancies))
-h.close()
-
