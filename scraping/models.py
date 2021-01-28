@@ -44,9 +44,9 @@ class Profession(models.Model):
 
 class Vacancy(models.Model):
     url = models.URLField(unique=True)
-    title = models.CharField(max_length=250, verbose_name='Заголовок вакансии')
-    company = models.CharField(max_length=250, verbose_name='Компания')
-    description = models.TextField(verbose_name='Описание вакансии')
+    title = models.CharField(max_length=250, verbose_name='Заголовок вакансии', unique=True)
+    company = models.CharField(max_length=250, verbose_name='Компания', unique=True)
+    description = models.TextField(verbose_name='Описание вакансии', unique=True)
     city = models.ForeignKey('City', on_delete=models.CASCADE,
                              verbose_name='Город')
     profession = models.ForeignKey('Profession', on_delete=models.CASCADE,
