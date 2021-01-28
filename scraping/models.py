@@ -3,7 +3,8 @@ from django.db import models
 from .utils import make_slug
 
 
-# Create your models here.
+def default_urls():
+    return {'headhanter': '', 'habr': ''}
 
 
 class City(models.Model):
@@ -64,3 +65,15 @@ class Vacancy(models.Model):
 class Error(models.Model):
     timestamp = models.DateField(auto_now_add=True)
     data = jsonfield.JSONField()
+
+
+class Url(models.Model):
+    city = models.ForeignKey('City', on_delete=models.CASCADE,
+                             verbose_name='Город')
+    profession = models.ForeignKey('Profession', on_delete=models.CASCADE,
+                                   verbose_name='Ключевой навык')
+    url_data = jsonfield.JSONField(default=default_urls())
+    
+    class Meta():
+        unique_together = ('city', 'profession')
+ла
