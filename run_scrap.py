@@ -13,38 +13,46 @@ import django
 django.setup()
 
 from scraping.scrap import *
-from scraping.models import City, Profession, Vacancy, Error
+from scraping.models import City, Profession, Vacancy, Error, Url
 
 User = get_user_model()
 
 parsers = (
-    (headhunter, 'https://hh.ru/search/vacancy?clusters=true&text=python&enable_snippets=true&L_'
-                 'save_area=True&area=1&from=NEIGHBOURS&showClusters=true'),
-    (habr, 'https://career.habr.com/vacancies?city_id=678&skills[]=446&type=all')
+    (headhunter, 'headhunter'),
+    (habr, 'habr')
 )
 
 
 def get_settings():
-    qs = User.objects.filter(is_active=True)
+    qs = User.objects.filter(is_active=True).values()
     setting_list = set((q['city_id'], q['profession_id']) for q in qs)
     return setting_list
 
 
-q = get_settings()
+def get_urls(_setting):
+    qs = Url.objects.all().values()
+    url_dict = {(q['city_id'], q['profession_id']): q['url_data'] for q in qs}
+    urls = []
+    for pair in _setting:
+        tmp = {'city': pair[0], 'profession': pair[1], 'url_data': url_dict[pair]}
+        urls.append(tmp)
+    return urls
 
-city = City.objects.filter(slug='moskva').first()
-profession = Profession.objects.filter(slug='python').first()
+
+q = get_settings()
+url_list = get_urls(q)
 
 vacancies, errors = [], []
-for func, url in parsers:
-    v, e = func(url)
-    vacancies += v
-    errors += e
+for data in url_list:
+    for func, key in parsers:
+        url = data['url_data'][key]
+        v, e = func(url, city=data['city'], profession=data['profession'])
+        vacancies += v
+        errors += e
 
 for vacancy in vacancies:
-    v = Vacancy(**vacancy, city=city, profession=profession)
     try:
-        obj, created = Vacancy.objects.get_or_create(**vacancy, city=city, profession=profession)
+        obj, created = Vacancy.objects.get_or_create(**vacancy)
     except DatabaseError:
         pass
 

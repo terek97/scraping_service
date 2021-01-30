@@ -4,7 +4,7 @@ from .utils import make_slug
 
 
 def default_urls():
-    return {'headhanter': '', 'habr': ''}
+    return {'headhunter': '', 'habr': ''}
 
 
 class City(models.Model):
@@ -57,6 +57,7 @@ class Vacancy(models.Model):
     class Meta:
         verbose_name = "Вакансия"
         verbose_name_plural = "Вакансии"
+        ordering = ['-timestamp']
 
     def __str__(self):
         return self.title
