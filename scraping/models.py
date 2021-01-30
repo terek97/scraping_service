@@ -76,4 +76,3 @@ class Url(models.Model):
     
     class Meta():
         unique_together = ('city', 'profession')
-ла
